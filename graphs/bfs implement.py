@@ -1,43 +1,58 @@
+# Dependencies
 from collections import defaultdict
+from collections import deque
+
 
 class Graph:
+    """ Class to implement Graph Data structure and its associated functions
+    like add_edge and BFS. It uses defaultdict Data Structure from
+    collections package.
+    """
     def __init__(self):
-        self.graph=defaultdict(list)#defualt dictionary
-    def add_edge(self,u,v):#adding edge in graph
+        """Constructor to initialize graph member as a defaultdict."""
+        self.graph = defaultdict(list)
+
+    # Function to add Edges in graph
+    def add_edge(self, u, v):
+        """This function adds vertex to adjacency list. It assumes that
+        graph is Bi-Directional"""
         self.graph[u].append(v)
         self.graph[v].append(u)
-    def BFS(self,s):#bfs fuction
-        
-        visited=[False]*(n+1)#to check vertice is visited or not
-        queue=[]
-        queue.append(s)
-        distance=[0]*(n+1)#if distance asked assuming unit distance(1)
-        
-        while(queue):
-            s=queue.pop(0)
-            for  i in self.graph[s]:
-                if visited[i]!=True:
-                    
-                    distance[i]=distance[s]+1
-                    visited[i]=True
-                    queue.append(i)
-        return (distance)            
-g=Graph()
-q=int(input()) 
-for x in range(q):
-    g=Graph()
-    ne=input().split()
-    
-    n=int(ne[0])#number of nodes
-    e=int(ne[1])#number of edges
-    for i in range(e):
-        uv=input().split()
-        u=int(uv[0])#nodes between edge
-        v=int(uv[1])
-        
-        g.add_edge(u,v)
-    s=int(input())#for traversing or finding shortest distance form s to all nodes
-    
-    t=g.BFS(s)
-          
-    
+
+    def bfs(self, source):
+        """Function to perform Breadth First Search Traversal. It return a list
+        containing the order in which vertices were visited.
+        """
+        visited = [False] * (vertices + 1)
+        queue = deque()
+        queue.append(source)
+        order = list()
+        visited[source] = True
+        order.append(source)
+
+        while queue:
+            current_node = queue.pop()
+            for adjacent_node in self.graph[current_node]:
+                if not visited[adjacent_node] :
+                    order.append(adjacent_node)
+                    visited[adjacent_node] = True
+                    queue.append(adjacent_node)
+
+        return order
+
+
+if __name__ == '__main__':
+    test_cases = int(input())
+    for test_case in range(test_cases):
+        adj_list = Graph()
+        vertices, edges = map(int, input().split())
+
+        # Input edges
+        for edge in range(edges):
+            u, v = map(int, input().split())
+            adj_list.add_edge(u, v)
+
+        # here s is the source vertex from which BFS traversal will start
+        s = int(input())
+        bfs_traversal = adj_list.bfs(s)
+        print(bfs_traversal)
